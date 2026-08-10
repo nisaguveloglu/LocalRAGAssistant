@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Local database
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+
+# Local documents
+documents/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
