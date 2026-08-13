@@ -26,3 +26,4 @@ documents/
 # IDE
 .vscode/
 .idea/
+logs/*.log

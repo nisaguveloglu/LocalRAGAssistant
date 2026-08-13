@@ -1,3 +1,5 @@
+"""Domain model representing a vector similarity search result."""
+
 from dataclasses import dataclass
 
 from domain.chunk import Chunk
@@ -5,18 +7,7 @@ from domain.chunk import Chunk
 
 @dataclass(slots=True)
 class SearchResult:
-    """
-    Retrieval aşamasında elde edilen arama sonucunu temsil eder.
-
-    Attributes
-    ----------
-    chunk : Chunk
-        Eşleşen metin parçası.
-
-    score : float
-        Sorgu ile chunk arasındaki benzerlik skoru
-        (örneğin cosine similarity).
-    """
+    """Represents a retrieved chunk with its similarity score."""
 
     chunk: Chunk
     score: float

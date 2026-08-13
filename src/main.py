@@ -1,17 +1,19 @@
-import argparse
+"""Command-line interface entry point for Local RAG Assistant."""
 
+import argparse
+import sys
+
+from config import TOP_K
 from pipeline.ingest_pipeline import IngestionPipeline
 from pipeline.rag_pipeline import RAGPipeline
+from utils.logger import logger
 
 
 def main() -> None:
-    
-    #Local RAG Assistant uygulamasının giriş noktası.
-    
-
+    """Main CLI entry point for document ingestion and chat interaction."""
     parser = argparse.ArgumentParser(
         prog="LocalRAGAssistant",
-        description="Local RAG Assistant using Foundry Local",
+        description="Local RAG Assistant using Sentence Transformers, SQLite, and Ollama.",
     )
 
     subparsers = parser.add_subparsers(
@@ -19,77 +21,55 @@ def main() -> None:
         required=True,
     )
 
-    # --------------------------------------------------------------
-    # ingest
-    # --------------------------------------------------------------
-
     subparsers.add_parser(
         "ingest",
-        help="Read documents, create chunks, generate embeddings and store them.",
+        help="Read documents, create chunks, generate embeddings, and store in database.",
     )
-
-    # --------------------------------------------------------------
-    # chat
-    # --------------------------------------------------------------
 
     chat_parser = subparsers.add_parser(
         "chat",
         help="Start an interactive RAG chat session.",
     )
-
     chat_parser.add_argument(
         "--top-k",
         type=int,
-        default=5,
-        help="Number of retrieved chunks.",
+        default=TOP_K,
+        help="Number of retrieved context chunks.",
     )
 
     args = parser.parse_args()
 
-    # --------------------------------------------------------------
-    # INGEST
-    # --------------------------------------------------------------
-
     if args.command == "ingest":
-
         pipeline = IngestionPipeline()
-
         pipeline.run()
-
         return
 
-    # --------------------------------------------------------------
-    # CHAT
-    # --------------------------------------------------------------
-
     if args.command == "chat":
-
-        pipeline = RAGPipeline(
-            top_k=args.top_k,
-        )
+        pipeline = RAGPipeline(top_k=args.top_k)
 
         print("=" * 60)
-        print("Local RAG Assistant")
-        print("Type 'exit' to quit.")
+        print("Local RAG Assistant Interactive Chat")
+        print("Type 'exit' or 'quit' to end session.")
         print("=" * 60)
 
         while True:
+            try:
+                question = input("\nYou > ").strip()
+                if not question:
+                    continue
 
-            question = input("\nYou > ").strip()
+                if question.lower() in {"exit", "quit", "q"}:
+                    print("\nGoodbye!")
+                    break
 
-            if not question:
-                continue
-
-            if question.lower() in {
-                "exit",
-                "quit",
-                "q",
-            }:
-                break
-
-            answer = pipeline.ask(question)
-
-            print(f"\nAssistant > {answer}")
+                answer = pipeline.ask(question)
+                print(f"\nAssistant > {answer}")
+            except KeyboardInterrupt:
+                print("\nSession interrupted. Goodbye!")
+                sys.exit(0)
+            except Exception as err:
+                logger.error("Error generating answer: %s", err)
+                print(f"\nError: {err}")
 
 
 if __name__ == "__main__":

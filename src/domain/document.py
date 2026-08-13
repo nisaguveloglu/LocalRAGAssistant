@@ -1,19 +1,11 @@
+"""Domain model representing a source document."""
+
 from dataclasses import dataclass
 
 
 @dataclass(slots=True)
 class Document:
-    """
-    Sisteme yüklenen bir belgeyi temsil eder.
-
-    Attributes
-    ----------
-    filename : str
-        Belgenin dosya adı.
-
-    content : str
-        Belgenin tamamının metin içeriği.
-    """
+    """Represents a source document loaded from disk."""
 
     filename: str
     content: str

@@ -1,20 +1,13 @@
+"""Abstract LLM provider interface."""
+
 from abc import ABC, abstractmethod
+from typing import Any, Sequence
 
 
 class LLMProvider(ABC):
-    """
-    Base interface for all LLM providers.
-    """
+    """Abstract interface for language model providers."""
 
     @abstractmethod
-    def chat(self, messages: list[dict]) -> str:
-        """
-        Send a chat request to the model.
-
-        Args:
-            messages: OpenAI-compatible message list.
-
-        Returns:
-            Model response as string.
-        """
+    def chat(self, messages: Sequence[dict[str, Any]]) -> str:
+        """Sends chat completion messages to the language model."""
         pass

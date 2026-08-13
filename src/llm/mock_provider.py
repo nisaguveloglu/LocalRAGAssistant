@@ -1,25 +1,17 @@
+"""Mock LLM provider implementation for offline testing."""
+
+from typing import Any, Sequence
+
 from llm.provider import LLMProvider
 
 
 class MockLLMProvider(LLMProvider):
-    """
-    Mock provider used during development.
+    """Mock provider for unit testing and offline development."""
 
-    Instead of calling a real LLM,
-    it simply returns the prompt that would
-    normally be sent to the model.
-    """
-
-    def chat(self, messages: list[dict]) -> str:
-
-        response = []
-
+    def chat(self, messages: Sequence[dict[str, Any]]) -> str:
+        response: list[str] = []
         for message in messages:
-
-            role = message["role"].upper()
-
+            role = str(message.get("role", "")).upper()
             response.append(f"\n===== {role} =====\n")
-
-            response.append(message["content"])
-
+            response.append(str(message.get("content", "")))
         return "\n".join(response)
